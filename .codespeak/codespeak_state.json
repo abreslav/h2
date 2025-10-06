@@ -56,7 +56,9 @@
             "web_application": true
         },
         "external_apis": "external_apis.json",
-        "commit_message": "Implement HelloLLM web app with Django, Tailwind, Gemini"
+        "commit_message": "Implement HelloLLM web app with Django, Tailwind, Gemini",
+        "methods_to_test_raw": "methods_to_test_raw.json",
+        "methods_to_test": "methods_to_test.json"
     },
     "phase_manager": {
         "history": [
@@ -91,6 +93,10 @@
             {
                 "checkpoint": "{\"run\":{\"id\":\"92852620-f022-44b3-9727-c54b0fb8eaec\",\"kind\":\"build\"},\"phase_id\":\"FeedbackLoopWithClaudeCode\",\"additional_id\":null}",
                 "timestamp": "2025-10-06T16:25:20.256071+00:00"
+            },
+            {
+                "checkpoint": "{\"run\":{\"id\":\"92852620-f022-44b3-9727-c54b0fb8eaec\",\"kind\":\"build\"},\"phase_id\":\"AnalyzeAndPlanTests\",\"additional_id\":null}",
+                "timestamp": "2025-10-06T16:25:29.894828+00:00"
             }
         ]
     }
