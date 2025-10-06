@@ -1,0 +1,186 @@
+{% extends 'django_app/base.html' %}
+
+{% block title %}HelloLLM - AI Chat Interface{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="mb-8 text-center">
+        <h1 class="text-4xl font-bold terminal-accent mb-2">HelloLLM</h1>
+        <p class="text-lg terminal-text opacity-80">AI Chat Interface for Techies</p>
+        <div class="mt-4 text-sm opacity-60">
+            <span class="terminal-success">●</span> Powered by Gemini 2.0 Flash Experimental
+            <span class="mx-2">|</span>
+            <span class="terminal-accent">Cmd+Enter</span> to send
+        </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="space-y-6">
+        <!-- Input Area -->
+        <div class="border terminal-border rounded-lg bg-gray-900/50 p-4">
+            <label for="prompt" class="block text-sm font-medium terminal-accent mb-2">
+                > Enter your prompt:
+            </label>
+            <textarea
+                id="prompt"
+                name="prompt"
+                rows="6"
+                class="w-full bg-gray-800 border terminal-border rounded-md px-3 py-2 terminal-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical min-h-[120px]"
+                placeholder="Type your question or prompt here..."
+                autofocus
+            ></textarea>
+            <div class="mt-3 flex justify-between items-center">
+                <div class="text-xs opacity-60">
+                    <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">Cmd</kbd> +
+                    <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">Enter</kbd> to send
+                </div>
+                <button
+                    id="sendBtn"
+                    type="button"
+                    class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:opacity-50 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                >
+                    <span id="sendBtnText">Send to LLM</span>
+                    <span id="sendBtnLoader" class="hidden">
+                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle>
+                            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"></path>
+                        </svg>
+                        Processing...
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Response Area -->
+        <div id="responseContainer" class="hidden border terminal-border rounded-lg bg-gray-900/30 p-4">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-medium terminal-success">
+                    < LLM Response:
+                </h3>
+                <button
+                    id="clearBtn"
+                    type="button"
+                    class="text-xs text-gray-400 hover:text-white transition-colors"
+                >
+                    Clear
+                </button>
+            </div>
+            <div
+                id="response"
+                class="bg-gray-800/50 border terminal-border rounded p-4 whitespace-pre-wrap terminal-text overflow-auto max-h-96 scrollbar-hide"
+            ></div>
+        </div>
+
+        <!-- Error Area -->
+        <div id="errorContainer" class="hidden border border-red-600/50 rounded-lg bg-red-900/20 p-4">
+            <h3 class="text-sm font-medium terminal-error mb-2">
+                ! Error:
+            </h3>
+            <div id="error" class="terminal-error text-sm"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-12 text-center text-xs opacity-40">
+        <p>Built with Django + Tailwind CSS + Gemini AI</p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const promptTextarea = document.getElementById('prompt');
+    const sendBtn = document.getElementById('sendBtn');
+    const sendBtnText = document.getElementById('sendBtnText');
+    const sendBtnLoader = document.getElementById('sendBtnLoader');
+    const responseContainer = document.getElementById('responseContainer');
+    const responseDiv = document.getElementById('response');
+    const errorContainer = document.getElementById('errorContainer');
+    const errorDiv = document.getElementById('error');
+    const clearBtn = document.getElementById('clearBtn');
+
+    // Handle keyboard shortcuts
+    promptTextarea.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Send button click handler
+    sendBtn.addEventListener('click', sendMessage);
+
+    // Clear button click handler
+    clearBtn.addEventListener('click', function() {
+        responseContainer.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+    });
+
+    async function sendMessage() {
+        const prompt = promptTextarea.value.trim();
+
+        if (!prompt) {
+            showError('Please enter a prompt');
+            return;
+        }
+
+        // Show loading state
+        setLoading(true);
+        hideError();
+        hideResponse();
+
+        try {
+            const response = await fetch('/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt: prompt })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showResponse(data.response);
+            } else {
+                showError(data.error || 'Unknown error occurred');
+            }
+        } catch (error) {
+            showError('Network error: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function setLoading(loading) {
+        sendBtn.disabled = loading;
+        if (loading) {
+            sendBtnText.classList.add('hidden');
+            sendBtnLoader.classList.remove('hidden');
+        } else {
+            sendBtnText.classList.remove('hidden');
+            sendBtnLoader.classList.add('hidden');
+        }
+    }
+
+    function showResponse(text) {
+        responseDiv.textContent = text;
+        responseContainer.classList.remove('hidden');
+        responseDiv.scrollTop = 0;
+    }
+
+    function hideResponse() {
+        responseContainer.classList.add('hidden');
+    }
+
+    function showError(message) {
+        errorDiv.textContent = message;
+        errorContainer.classList.remove('hidden');
+    }
+
+    function hideError() {
+        errorContainer.classList.add('hidden');
+    }
+});
+</script>
+{% endblock %}

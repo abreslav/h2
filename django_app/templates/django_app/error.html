@@ -1,0 +1,52 @@
+{% extends 'django_app/base.html' %}
+
+{% block title %}Configuration Error - HelloLLM{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold terminal-error mb-2">Configuration Error</h1>
+        <p class="text-lg terminal-text opacity-80">HelloLLM cannot start</p>
+    </div>
+
+    <div class="border border-red-600/50 rounded-lg bg-red-900/20 p-6">
+        <div class="flex items-center mb-4">
+            <svg class="w-6 h-6 terminal-error mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-xl font-semibold terminal-error">Missing Configuration</h2>
+        </div>
+
+        <p class="terminal-text mb-4">{{ error }}</p>
+
+        <div class="bg-gray-800/50 border terminal-border rounded p-4 mb-4">
+            <h3 class="text-sm font-medium terminal-accent mb-2">To fix this issue:</h3>
+            <ol class="list-decimal list-inside space-y-2 text-sm terminal-text">
+                {% for param in missing_config %}
+                <li>Set the <code class="bg-gray-700 px-2 py-1 rounded text-xs">{{ param }}</code> environment variable</li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <div class="bg-gray-800/50 border terminal-border rounded p-4">
+            <h3 class="text-sm font-medium terminal-accent mb-2">Example configuration:</h3>
+            <pre class="text-xs terminal-text"><code># Create .env.local file in project root
+{% for param in missing_config %}{{ param }}=your_{{ param|lower }}_here
+{% endfor %}</code></pre>
+        </div>
+    </div>
+
+    <div class="mt-8 text-center">
+        <button
+            onclick="location.reload()"
+            class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-md text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+        >
+            Retry
+        </button>
+    </div>
+
+    <div class="mt-12 text-center text-xs opacity-40">
+        <p>Built with Django + Tailwind CSS + Gemini AI</p>
+    </div>
+</div>
+{% endblock %}

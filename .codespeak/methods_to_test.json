@@ -1,0 +1,48 @@
+{
+    "django_app/config.py": [
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "_read_config_parameter"
+            },
+            "kind": "unit_tests"
+        },
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "get_gemini_api_key"
+            },
+            "kind": "unit_tests"
+        },
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "validate_required_config"
+            },
+            "kind": "unit_tests"
+        }
+    ],
+    "django_app/views.py": [
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "chat_with_llm"
+            },
+            "kind": "endpoint_tests"
+        },
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "chat_with_llm"
+            },
+            "kind": "external_api_tests"
+        },
+        {
+            "method": {
+                "enclosing_classes": [],
+                "method_name": "home"
+            },
+            "kind": "endpoint_tests"
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+[
+    {
+        "name": "gemini",
+        "use_cases": [
+            {
+                "description": "Send user prompts to Gemini 2.5-flash-light model and receive AI-generated responses",
+                "spec_source_quote": "When the user hits Cmd+Enter (or presses \"Send to LLM\") the LLM's response is displayed under the edit box."
+            }
+        ],
+        "config_parameters": [
+            {
+                "name": "GEMINI_API_KEY",
+                "kind": "token",
+                "guidance": "To obtain a Gemini API key:\n1. Go to Google AI Studio at https://aistudio.google.com/\n2. Sign in with your Google account\n3. Click on \"Get API key\" in the left sidebar\n4. Click \"Create API key\"\n5. Choose \"Create API key in new project\" or select an existing Google Cloud project\n6. Copy the generated API key\n7. Keep this key secure and do not share it publicly",
+                "default": null
+            }
+        ],
+        "sdk_choice": {
+            "kind": "existing",
+            "uv_package_name": "google-generativeai"
+        }
+    }
+]
