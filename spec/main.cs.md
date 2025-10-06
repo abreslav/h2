@@ -1,17 +1,13 @@
-// This is a comment. This line is ignored.
-// Here’s an example of a CodeSpeak spec file.
-
-HelloWorld is a simple web app that displays a greeting.
+HelloLLM is a simple web app that demostrates playing with LLMs
 
 # Tech Stack
 
 - Django
 - Tailwind CSS
-
-# Routing
-
-The app responds to only one route (/).
+- Gemini (2.5-flash-light)
 
 # User Interface
 
-A nice looking HTML page with the message: "Hello from CodeSpeak!"
+The home page is styles for techies.
+
+It displays a multiline edit box to enter a prompt. When the user hits Cmd+Enter (or presses "Send to LLM") the LLM's response is displayed under the edit box.
